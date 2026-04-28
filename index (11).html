@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Cai thuốc cùng VLU-ER | AI Groq</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-light: #ccfbf1;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --font: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER & NAVIGATION ===== */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      font-size: 1.8rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text-light);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      width: 100%;
+    }
+
+    .page {
+      display: none;
+      animation: fadeSlideIn 0.4s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== HERO / TRANG CHỦ ===== */
+    .hero {
+      background: linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 50%, #e6fffa 100%);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      border: 1px solid #bae6fd20;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      color: var(--primary-dark);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #334155;
+      max-width: 650px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius-sm);
+      padding: 1.2rem 1.5rem;
+      box-shadow: var(--shadow);
+      min-width: 130px;
+    }
+
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--danger);
+    }
+
+    .stat-card .label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      cursor: pointer;
+      border: 2px solid transparent;
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .feature-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card h3 {
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ===== SECTION HEADINGS ===== */
+    .section-title {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid var(--primary-light);
+      display: inline-block;
+    }
+
+    /* ===== CARDS & CONTENT ===== */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .card h3 {
+      color: var(--primary-dark);
+      margin-bottom: 0.8rem;
+      font-size: 1.3rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .cause-list,
+    .harm-list,
+    .tip-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .cause-list li,
+    .harm-list li,
+    .tip-list li {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .cause-list li:last-child,
+    .harm-list li:last-child,
+    .tip-list li:last-child {
+      border-bottom: none;
+    }
+
+    .bullet {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    /* Chart container */
+    .chart-container {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ===== CHATBOT ===== */
+    .chatbot-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
+      z-index: 200;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chatbot-toggle:hover {
+      background: var(--primary-dark);
+      transform: scale(1.05);
+    }
+
+    .chatbot-window {
+      position: fixed;
+      bottom: 5.5rem;
+      right: 2rem;
+      width: 380px;
+      max-width: calc(100vw - 2rem);
+      height: 520px;
+      max-height: 70vh;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+      z-index: 199;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .chatbot-window.open {
+      display: flex;
+      animation: fadeSlideIn 0.3s ease;
+    }
+
+    .chatbot-header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chatbot-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      background: #f9fafb;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 0.7rem 1rem;
+      border-radius: 18px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: var(--primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: #e5e7eb;
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.typing {
+      font-style: italic;
+      color: #4b5563;
+      background: #f3f4f6;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .chatbot-input-area {
+      display: flex;
+      padding: 0.7rem;
+      border-top: 1px solid var(--border);
+      background: white;
+    }
+
+    .chatbot-input-area input {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.9rem;
+      outline: none;
+      font-family: var(--font);
+    }
+
+    .chatbot-input-area button {
+      margin-left: 0.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.7rem 1.3rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .chatbot-input-area button:hover {
+      background: var(--primary-dark);
+    }
+
+    /* ===== RESOURCE LIST ===== */
+    .resource-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .resource-list li {
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .resource-list a {
+      color: var(--primary-dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .resource-list a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .header-inner {
+        height: auto;
+        padding: 0.8rem 1rem;
+        flex-wrap: wrap;
+      }
+      nav {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 0.3rem;
+        margin-top: 0.5rem;
+      }
+      nav.show {
+        display: flex;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .hero h1 {
+        font-size: 1.7rem;
+      }
+      .chatbot-window {
+        width: calc(100vw - 2rem);
+        right: 1rem;
+        bottom: 5rem;
+      }
+      .chatbot-toggle {
+        right: 1rem;
+        bottom: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo" onclick="navigate('home')">
+        <span>🚭</span> Cai thuốc cùng VLU-ER
+      </a>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+      <nav id="mainNav">
+        <a href="#" onclick="navigate('home')" class="active" data-page="home">🏠 Trang chủ</a>
+        <a href="#" onclick="navigate('causes')" data-page="causes">📋 Nguyên nhân</a>
+        <a href="#" onclick="navigate('harms')" data-page="harms">⚠️ Tác hại</a>
+        <a href="#" onclick="navigate('quit-guide')" data-page="quit-guide">📘 Cẩm nang bỏ thuốc</a>
+        <a href="#" onclick="navigate('resources')" data-page="resources">📂 Tài nguyên</a>
+        <a href="#" onclick="navigate('chatbot-page')" data-page="chatbot-page">🤖 Chatbot AI</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- TRANG CHỦ -->
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <h1>🚬 Hút thuốc ở sinh viên: Hiểu để vượt qua</h1>
+        <p>Trang web cung cấp thông tin toàn diện, công cụ hỗ trợ và Chatbot AI tốc độ cao (Groq) giúp bạn nhận thức rõ hơn và tìm ra lộ trình bỏ thuốc phù hợp.</p>
+        <div class="hero-stats">
+          <div class="stat-card"><div class="number">40%</div><div class="label">Sinh viên từng thử hút thuốc</div></div>
+          <div class="stat-card"><div class="number">8 triệu</div><div class="label">Người tử vong do thuốc lá/năm</div></div>
+          <div class="stat-card"><div class="number">70%</div><div class="label">Người hút muốn bỏ nhưng khó</div></div>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card" onclick="navigate('causes')">
+          <div class="icon">🧠</div><h3>Nguyên nhân</h3><p>Khám phá lý do sinh viên hút thuốc.</p>
+        </div>
+        <div class="feature-card" onclick="navigate('harms')">
+          <div class="icon">💔</div><h3>Tác hại</h3><p>Hiểu rõ tổn thương sức khỏe.</p>
+        </div>
+        <div class="feature-card" onclick="navigate('quit-guide')">
+          <div class="icon">✅</div><h3>Lời khuyên bỏ thuốc</h3><p>Phương pháp và lộ trình.</p>
+        </div>
+        <div class="feature-card" onclick="navigate('chatbot-page')">
+          <div class="icon">🤖</div><h3>Chatbot AI (Groq)</h3><p>Trò chuyện thông minh, cá nhân hóa.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📊 Biểu đồ xu hướng hút thuốc ở sinh viên</h3>
+        <div class="chart-container"><canvas id="homeChart" width="500" height="280"></canvas></div>
+        <p style="text-align:center;color:var(--text-light);">Số liệu mô phỏng 2020-2025</p>
+      </div>
+    </section>
+
+    <!-- NGUYÊN NHÂN -->
+    <section class="page" id="page-causes">
+      <h2 class="section-title">📋 Nguyên nhân sinh viên hút thuốc</h2>
+      <div class="grid-2">
+        <div class="card"><h3>📚 Áp lực học tập & deadline</h3><p>Khối lượng bài vở, thi cử khiến sinh viên tìm đến thuốc lá như cách giải tỏa tạm thời.</p></div>
+        <div class="card"><h3>💰 Áp lực kinh tế & việc làm</h3><p>Lo lắng tài chính, tương lai nghề nghiệp tạo gánh nặng tâm lý.</p></div>
+        <div class="card"><h3>🔄 Thay đổi môi trường sống</h3><p>Rời xa gia đình, cảm giác cô đơn, lạc lõng có thể kích hoạt hành vi hút thuốc.</p></div>
+        <div class="card"><h3>👥 Áp lực bạn bè & xã hội</h3><p>Khó từ chối khi bị rủ rê, muốn hòa nhập với nhóm.</p></div>
+      </div>
+      <div class="card"><h3>🗣️ Câu chuyện thực tế</h3><p><em>"Năm hai đại học, mình bắt đầu hút thuốc vì nhóm bạn cùng phòng ai cũng hút..."</em> — <strong>Minh, 22 tuổi</strong></p></div>
+    </section>
+
+    <!-- TÁC HẠI -->
+    <section class="page" id="page-harms">
+      <h2 class="section-title">⚠️ Tác hại của thuốc lá</h2>
+      <div class="card"><h3>🩺 Sức khỏe ngắn hạn</h3><ul class="harm-list"><li><span class="bullet">🔹</span> Hơi thở có mùi, răng ố vàng, da xỉn màu.</li><li><span class="bullet">🔹</span> Giảm dung tích phổi, khó thở khi vận động.</li><li><span class="bullet">🔹</span> Ho, đau họng, tăng nguy cơ viêm phế quản.</li></ul></div>
+      <div class="card"><h3>🏥 Sức khỏe dài hạn</h3><ul class="harm-list"><li><span class="bullet">🔴</span> Ung thư phổi, thanh quản, miệng.</li><li><span class="bullet">🔴</span> Bệnh tim mạch, đột quỵ, COPD.</li><li><span class="bullet">🔴</span> Giảm tuổi thọ trung bình 10-15 năm.</li></ul></div>
+      <div class="card"><h3>📉 Học tập & cuộc sống</h3><p>Giảm tập trung, tăng tỉ lệ nghỉ học, ảnh hưởng thành tích và cơ hội việc làm.</p></div>
+      <div class="card"><h3>🌍 Môi trường</h3><p>Đầu lọc thuốc lá là rác thải nhựa khó phân hủy, gây ô nhiễm đất và nước.</p></div>
+      <div class="chart-container"><canvas id="harmChart" width="500" height="300"></canvas><p style="text-align:center;color:var(--text-light);">Tỉ lệ bệnh lý liên quan đến hút thuốc (mô phỏng)</p></div>
+    </section>
+
+    <!-- CẨM NANG BỎ THUỐC -->
+    <section class="page" id="page-quit-guide">
+      <h2 class="section-title">📘 Cẩm nang bỏ thuốc</h2>
+      <div class="grid-2">
+        <div class="card"><h3>🩺 Tham vấn y tế</h3><p>Gặp bác sĩ để được tư vấn về liệu pháp thay thế nicotine (kẹo cao su, miếng dán).</p></div>
+        <div class="card"><h3>🧠 Kỹ thuật tâm lý</h3><p>Liệu pháp hành vi nhận thức (CBT), thiền chánh niệm, viết nhật ký.</p></div>
+        <div class="card"><h3>📅 Lộ trình 4 tuần</h3><ul class="tip-list"><li><span class="bullet">📌</span><strong>Tuần 1:</strong> Xác định lý do bỏ, ghi nhật ký.</li><li><span class="bullet">📌</span><strong>Tuần 2:</strong> Cắt giảm dần, thay thói quen lành mạnh.</li><li><span class="bullet">📌</span><strong>Tuần 3:</strong> Ngày bỏ hoàn toàn.</li><li><span class="bullet">📌</span><strong>Tuần 4:</strong> Duy trì, xây dựng lối sống mới.</li></ul></div>
+        <div class="card"><h3>💪 Đối phó cơn thèm</h3><p>Uống nước lạnh, nhai kẹo cao su, hít thở sâu, đi dạo 10 phút.</p></div>
+      </div>
+      <div class="card"><h3>🌟 Chia sẻ từ người thành công</h3><p><em>"Mình đã hút 5 năm, bỏ thành công nhờ đặt mục tiêu tiết kiệm tiền mua thuốc..."</em> — <strong>Lan, 24 tuổi</strong></p></div>
+    </section>
+
+    <!-- TÀI NGUYÊN -->
+    <section class="page" id="page-resources">
+      <h2 class="section-title">📂 Tài nguyên hỗ trợ</h2>
+      <div class="card"><h3>📞 Đường dây nóng & Tổ chức</h3><ul class="resource-list"><li>🚑 <strong>Đường dây nóng Bộ Y tế:</strong> 1900 3228</li><li>🏥 <strong>Bệnh viện Bạch Mai:</strong> 024 3869 3731</li><li>🌐 <strong>Quỹ Phòng chống tác hại thuốc lá:</strong> <a href="https://vn0khoithuoc.com" target="_blank">vn0khoithuoc.com</a></li></ul></div>
+      <div class="card"><h3>📄 Bài báo & Nghiên cứu</h3><ul class="resource-list"><li><a href="#">Thực trạng hút thuốc trong sinh viên VN (2024)</a></li><li><a href="#">Tác hại thuốc lá thế hệ mới (WHO)</a></li></ul></div>
+    </section>
+
+    <!-- TRANG CHATBOT RIÊNG -->
+    <section class="page" id="page-chatbot-page">
+      <h2 class="section-title">🤖 Chatbot AI (Groq)</h2>
+      <div class="card" style="text-align: center;">
+        <p>Trò chuyện với AI tốc độ cao từ Groq. Hãy đặt câu hỏi về hút thuốc, tác hại, cách bỏ thuốc hoặc chia sẻ tình trạng của bạn.</p>
+        <div id="embedded-chat" style="max-width:500px;margin:1rem auto;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+          <div style="background:var(--primary);color:white;padding:0.8rem;">🤖 Trợ lý AI (Groq)</div>
+          <div id="embedded-messages" style="height:300px;overflow-y:auto;padding:1rem;background:#f9fafb;display:flex;flex-direction:column;gap:0.6rem;">
+            <div class="message bot">Xin chào! Mình là trợ lý AI, sẵn sàng hỗ trợ bạn về vấn đề thuốc lá.</div>
+          </div>
+          <div style="display:flex;padding:0.5rem;border-top:1px solid var(--border);">
+            <input type="text" id="embedded-input" placeholder="Nhập câu hỏi..." style="flex:1;padding:0.6rem;border:1px solid var(--border);border-radius:50px;outline:none;" onkeypress="if(event.key==='Enter')sendEmbeddedMessage()">
+            <button onclick="sendEmbeddedMessage()" style="margin-left:0.4rem;background:var(--primary);color:white;border:none;border-radius:50px;padding:0.6rem 1.2rem;cursor:pointer;">Gửi</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- CHATBOT FLOATING -->
+  <button class="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="chatbot-header">🤖 Trợ lý AI (Groq)</div>
+    <div class="chatbot-messages" id="floating-messages">
+      <div class="message bot">Chào bạn! Mình ở đây để hỗ trợ bạn về vấn đề hút thuốc.</div>
+    </div>
+    <div class="chatbot-input-area">
+      <input type="text" id="floating-input" placeholder="Hỏi về thuốc lá, cách bỏ..." onkeypress="if(event.key==='Enter')sendFloatingMessage()">
+      <button onclick="sendFloatingMessage()">Gửi</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 Cai thuốc cùng VLU-ER. Vì một thế hệ trẻ khỏe mạnh.</p>
+    <p style="font-size:0.8rem;">Thông tin chỉ mang tính tham khảo. Hãy liên hệ chuyên gia y tế.</p>
+  </footer>
+
+  <script>
+    (function() {
+      // ========== CẤU HÌNH GROQ ==========
+      const GROQ_API_KEY = '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'; // Thay bằng key của bạn từ console.groq.com
+      const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
+      const GROQ_MODEL = 'llama-3.3-70b-versatile'; // hoặc mixtral-8x7b-32768
+
+      const SYSTEM_PROMPT = `Bạn là trợ lý AI thân thiện, chuyên tư vấn cai thuốc lá cho sinh viên.
+Trả lời bằng tiếng Việt, ngắn gọn, đồng cảm. Cung cấp thông tin về tác hại, nguyên nhân, phương pháp bỏ thuốc, hỗ trợ tinh thần.
+Nếu cần hỗ trợ y tế, hãy khuyên gặp bác sĩ.`;
+
+      // Lịch sử hội thoại cho từng khung chat
+      const chatHistories = {
+        floating: [],
+        embedded: []
+      };
+
+      // ========== GỌI GROQ API ==========
+      async function getAIResponse(userMessage, history) {
+        const messages = [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...history,
+          { role: 'user', content: userMessage }
+        ];
+
+        const response = await fetch(GROQ_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: GROQ_MODEL,
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 500
+          })
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`Lỗi Groq (${response.status}): ${errText}`);
+        }
+
+        const data = await response.json();
+        return data.choices[0].message.content.trim();
+      }
+
+      // ========== GIAO DIỆN CHAT ==========
+      function addMessage(containerId, text, sender, extraClass = '') {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message ' + sender + ' ' + extraClass;
+        msgDiv.textContent = text;
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
+        return msgDiv;
+      }
+
+      function showTyping(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return null;
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot typing';
+        typingDiv.textContent = 'Đang trả lời...';
+        container.appendChild(typingDiv);
+        container.scrollTop = container.scrollHeight;
+        return typingDiv;
+      }
+
+      async function handleSend(containerId, inputId, historyKey) {
+        const input = document.getElementById(inputId);
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage(containerId, text, 'user');
+        if (!chatHistories[historyKey]) chatHistories[historyKey] = [];
+        chatHistories[historyKey].push({ role: 'user', content: text });
+        input.value = '';
+
+        const typingIndicator = showTyping(containerId);
+
+        try {
+          const recentHistory = chatHistories[historyKey].slice(-5);
+          const reply = await getAIResponse(text, recentHistory);
+          if (typingIndicator) typingIndicator.remove();
+          addMessage(containerId, reply, 'bot');
+          chatHistories[historyKey].push({ role: 'assistant', content: reply });
+        } catch (error) {
+          console.error(error);
+          if (typingIndicator) typingIndicator.remove();
+          addMessage(containerId, 'Rất tiếc, AI đang gặp sự cố. Vui lòng thử lại hoặc gọi 1900 3228.', 'bot', 'error');
+        }
+      }
+
+      window.sendFloatingMessage = () => handleSend('floating-messages', 'floating-input', 'floating');
+      window.sendEmbeddedMessage = () => handleSend('embedded-messages', 'embedded-input', 'embedded');
+
+      window.toggleChatbot = function() {
+        const win = document.getElementById('chatbotWindow');
+        win.classList.toggle('open');
+        if (win.classList.contains('open')) {
+          document.getElementById('floating-input').focus();
+        }
+      };
+
+      // ========== NAVIGATION ==========
+      window.navigate = function(pageName) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById('page-' + pageName);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        const navLink = document.querySelector(`nav a[data-page="${pageName}"]`);
+        if (navLink) navLink.classList.add('active');
+        const nav = document.getElementById('mainNav');
+        if (nav.classList.contains('show')) nav.classList.remove('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (pageName === 'chatbot-page') {
+          setTimeout(() => {
+            const embInput = document.getElementById('embedded-input');
+            if (embInput) embInput.focus();
+          }, 300);
+        }
+      };
+
+      window.toggleMobileMenu = function() {
+        document.getElementById('mainNav').classList.toggle('show');
+      };
+
+      // ========== BIỂU ĐỒ ==========
+      function drawHomeChart() {
+        const canvas = document.getElementById('homeChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+        const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
+        const rates = [28, 31, 35, 33, 30, 26];
+        const barWidth = 40, chartBottom = H - 50, chartTop = 40;
+        const chartHeight = chartBottom - chartTop;
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.beginPath(); ctx.moveTo(60, chartTop); ctx.lineTo(60, chartBottom); ctx.lineTo(W - 30, chartBottom); ctx.stroke();
+        const stepX = (W - 100) / years.length;
+        years.forEach((y, i) => {
+          const x = 70 + i * stepX;
+          const barH = (rates[i] / 40) * chartHeight;
+          const yBar = chartBottom - barH;
+          const grad = ctx.createLinearGradient(x, yBar, x, chartBottom);
+          grad.addColorStop(0, '#0d9488'); grad.addColorStop(1, '#5eead4');
+          ctx.fillStyle = grad;
+          ctx.fillRect(x, yBar, barWidth, barH);
+          ctx.fillStyle = '#1e293b'; ctx.font = 'bold 13px Segoe UI'; ctx.textAlign = 'center';
+          ctx.fillText(rates[i] + '%', x + barWidth / 2, yBar - 8);
+          ctx.fillText(y, x + barWidth / 2, chartBottom + 20);
+        });
+      }
+
+      function drawHarmChart() {
+        const canvas = document.getElementById('harmChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+        const labels = ['Ung thư phổi', 'Tim mạch', 'COPD', 'Đột quỵ', 'Vô sinh'];
+        const values = [85, 70, 65, 55, 30];
+        const colors = ['#ef4444', '#f97316', '#eab308', '#0d9488', '#8b5cf6'];
+        const total = values.reduce((a, b) => a + b, 0);
+        let startAngle = -Math.PI / 2;
+        const cx = W / 2, cy = H / 2 + 10, radius = Math.min(cx, cy) - 30;
+        values.forEach((v, i) => {
+          const sliceAngle = (v / total) * 2 * Math.PI;
+          ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle); ctx.closePath();
+          ctx.fillStyle = colors[i]; ctx.fill();
+          ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+          const mid = startAngle + sliceAngle / 2;
+          ctx.fillStyle = 'white'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'center';
+          ctx.fillText(v + '%', cx + Math.cos(mid) * radius * 0.7, cy + Math.sin(mid) * radius * 0.7);
+          startAngle += sliceAngle;
+        });
+        labels.forEach((l, i) => {
+          ctx.fillStyle = colors[i]; ctx.fillRect(30, H - 100 + i * 20, 12, 12);
+          ctx.fillStyle = '#1e293b'; ctx.textAlign = 'left'; ctx.fillText(l, 48, H - 90 + i * 20);
+        });
+      }
+
+      window.addEventListener('load', () => { drawHomeChart(); drawHarmChart(); });
+      window.addEventListener('resize', () => { drawHomeChart(); drawHarmChart(); });
+
+      // Click feature card
+      document.querySelectorAll('.feature-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const text = this.querySelector('h3')?.innerText || '';
+          if (text.includes('Nguyên nhân')) navigate('causes');
+          else if (text.includes('Tác hại')) navigate('harms');
+          else if (text.includes('Lời khuyên') || text.includes('bỏ thuốc')) navigate('quit-guide');
+          else if (text.includes('Chatbot')) navigate('chatbot-page');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
